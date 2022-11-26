@@ -6,7 +6,7 @@ using namespace gm;
 using namespace sf;
 
 // Implement constructor, this will effectively be a setup function as the game gets more complex
-Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 10)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 20) {
+Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 10)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200) {
 	// Set our fps to 60
 	window.setFramerateLimit(60);
 	// Hide mouse cursor
@@ -15,7 +15,7 @@ Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaT
 
 void Game::run() {
 	// This is our game loop!
-	ball.setVelocity(Vector2f(200,200));
+	ball.setVelocity(Vector2f(ball.getBaseSpeed(), ball.getBaseSpeed()));
 	// All input, logic, and rendering should be handled here
 	while (window.isOpen())
 	{

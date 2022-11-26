@@ -14,7 +14,7 @@ namespace gm {
         float baseSpeed,speedMultiplier;
 
     public:
-        SquareBall(const sf::Vector2f& position, const sf::Vector2f& size, int baseSpeed);
+        SquareBall(const sf::Vector2f& position, const sf::Vector2f& size, float baseSpeed);
 
         virtual void update(sf::RenderWindow& window, float deltaTime) override;
 
@@ -36,6 +36,10 @@ namespace gm {
         const sf::Vector2f& getVelocity() const;
 
         void setVelocity(const sf::Vector2f& velocity);
+
+        float getBaseSpeed() const;
+
+        void setBaseSpeed(float speed);
 
         // Bouncing on paddle
         void Bounce(const Paddle& paddle);

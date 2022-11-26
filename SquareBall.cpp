@@ -4,7 +4,7 @@
 using namespace sf;
 using namespace gm;
 
-SquareBall::SquareBall(const Vector2f& position, const Vector2f& size, int baseSpeed) : GameObject(position, size), baseSpeed(baseSpeed), speedMultiplier(1) {
+SquareBall::SquareBall(const Vector2f& position, const Vector2f& size, float baseSpeed) : GameObject(position, size), baseSpeed(baseSpeed), speedMultiplier(1) {
 	body.setPosition(position);
 	body.setSize(size);
 	velocity = Vector2f(0, 0);
@@ -55,6 +55,14 @@ void SquareBall::setSize(const Vector2f& size) {
 	body.setSize(size);
 }
 
+float SquareBall::getBaseSpeed() const {
+	return baseSpeed;
+}
+
+void SquareBall::setBaseSpeed(float speed) {
+	baseSpeed = speed;
+}
+
 // Bounce off paddle
 void SquareBall::Bounce(const Paddle& paddle) {
 	// Determine collision from which direction
@@ -63,74 +71,105 @@ void SquareBall::Bounce(const Paddle& paddle) {
 	float l_collision = collider.left + collider.width - paddle.getCollider().left;
 	float r_collision = paddle.getCollider().left + paddle.getCollider().width - collider.left;
 
-	if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision)
-	{
+	if (t_collision < b_collision && t_collision < l_collision && t_collision < r_collision) {
+		float currentSpeed = sqrtf(velocity.x * velocity.x + velocity.y * velocity.y) * speedMultiplier;
 		// Collision from top (increase speed)
+		// Different angle for x
+		if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 6) {
+			//left most angle
+			velocity.x = (-1) * currentSpeed * sin(60 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(60 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 3) {
+			//second left angle
+			velocity.x = (-1) * currentSpeed * sin(45 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(45 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 2) {
+			//third left angle
+			velocity.x = (-1) * currentSpeed * sin(30 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(30 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 3 * 2) {
+			//third right angle
+			velocity.x = currentSpeed * sin(30 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(30 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 6 * 5) {
+			//second right angle
+			velocity.x = currentSpeed * sin(45 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(45 * 3.14159f / 180);
+		}
+		else {
+			//most right angle
+			velocity.x = currentSpeed * sin(60 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(60 * 3.14159f / 180);
+		}
 		velocity.y = (-1) * velocity.y;
-		speedMultiplier += 0.1f;
+		speedMultiplier += 0.005f;
+
 		// Reset position
 		setPosition(Vector2f(getPosition().x, paddle.getPosition().y-getSize().y-0.1f));
 	}
-	if (b_collision < t_collision && b_collision < l_collision && b_collision < r_collision)
+	else if (b_collision < t_collision && b_collision < l_collision && b_collision < r_collision)
 	{
 		// Collision from bottom (not possible)
 	}
-	if (l_collision < r_collision && l_collision < t_collision && l_collision < b_collision)
+	else if (l_collision < r_collision && l_collision < t_collision && l_collision < b_collision)
 	{
 		// Collision from left
 		velocity.x = (-1) * velocity.x;
 		// Reset position
 		setPosition(Vector2f(paddle.getPosition().x-getSize().x-0.1f, getPosition().y));
 	}
-	if (r_collision < l_collision && r_collision < t_collision && r_collision < b_collision)
+	else if (r_collision < l_collision && r_collision < t_collision && r_collision < b_collision)
 	{
 		// Collision from right
 		velocity.x = (-1) * velocity.x;
 		// Reset position
 		setPosition(Vector2f(paddle.getPosition().x + paddle.getSize().x + 0.1f, getPosition().y));
 	}
+	// Emergency fast collision workaround
+	else if (getPosition().y > paddle.getPosition().y && getPosition().x > paddle.getPosition().x && getPosition().x + getSize().x < paddle.getPosition().x + paddle.getSize().x) {
+		float currentSpeed = sqrtf(velocity.x * velocity.x + velocity.y * velocity.y) * speedMultiplier;
+		// Collision from top (increase speed)
+		// Different angle for x
+		if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 6) {
+			//left most angle
+			velocity.x = (-1) * currentSpeed * sin(60 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(60 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 3) {
+			//second left angle
+			velocity.x = (-1) * currentSpeed * sin(45 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(45 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 2) {
+			//third left angle
+			velocity.x = (-1) * currentSpeed * sin(30 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(30 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 3 * 2) {
+			//third right angle
+			velocity.x = currentSpeed * sin(30 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(30 * 3.14159f / 180);
+		}
+		else if (getPosition().x + getSize().x / 2 < paddle.getPosition().x + paddle.getSize().x / 6 * 5) {
+			//second right angle
+			velocity.x = currentSpeed * sin(45 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(45 * 3.14159f / 180);
+		}
+		else {
+			//most right angle
+			velocity.x = currentSpeed * sin(60 * 3.14159f / 180);
+			velocity.y = currentSpeed * cos(60 * 3.14159f / 180);
+		}
+		velocity.y = (-1) * velocity.y;
+		speedMultiplier += 0.005f;
 
-
-	/*Determine which direction they collided
-	//hitting on top
-	if (velocity.y > 0 && (getPosition().y + getSize().y) <= (paddle.getPosition().y + 5) &&
-		((direction == -1 && getPosition().x <= paddle.getPosition().x + paddle.getSize().x) ||
-			(direction == 1 && getPosition().x + getSize().x >= paddle.getPosition().x))) {
-		//std::cout << "Hitting on Top" << std::endl;
-		// reset ball position to Avoid weird stick (temporary)
+		// Reset position
 		setPosition(Vector2f(getPosition().x, paddle.getPosition().y - getSize().y - 0.1f));
-		// bump back up
-		velocity.y = (-1) * velocity.y;
 	}
-	//hitting on bottom
-	else if (velocity.y < 0 && getPosition().y >= (paddle.getPosition().y+paddle.getSize().y-5) &&
-		((direction == -1 && getPosition().x <= paddle.getPosition().x + paddle.getSize().x) ||
-			(direction == 1 && getPosition().x + getSize().x >= paddle.getPosition().x) ) ) {
-		//std::cout << "Hitting on Bottom" << std::endl;
-		// reset ball position to Avoid weird stick (temporary)
-		setPosition(Vector2f(getPosition().x, paddle.getPosition().y + paddle.getSize().y + 0.1f));
-		// bump back down
-		velocity.y = (-1) * velocity.y;
-	}
-	else {
-		// If hitting on side reset ball position to Avoid weird stick (temporary)
-		if (direction == -1) {
-			setPosition(Vector2f(paddle.getPosition().x + paddle.getSize().x + 0.1f, getPosition().y));
-		}
-		else {
-			setPosition(Vector2f(paddle.getPosition().x - getSize().x - 0.1f, getPosition().y));
-		}
-		// Regular situation: bump back with a speedup and a slight angle change
-		if (paddle.getMovementDirection() == MovementDirection::Up) {
-			setVelocity(Vector2f((-1) * (getVelocity().x + direction * 40), getVelocity().y - 70));
-		}
-		else if (paddle.getMovementDirection() == MovementDirection::Down) {
-			setVelocity(Vector2f((-1) * (getVelocity().x + direction * 40), getVelocity().y + 70));
-		}
-		else {
-			setVelocity(Vector2f((-1) * (getVelocity().x + direction * 40), getVelocity().y));
-		}
-	}*/
 }
 
 // Bounce off brick
