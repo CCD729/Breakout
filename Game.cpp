@@ -6,7 +6,7 @@ using namespace gm;
 using namespace sf;
 
 // Implement constructor, this will effectively be a setup function as the game gets more complex
-Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::InGame), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 10)) {
+Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 10)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 20) {
 	// Set our fps to 60
 	window.setFramerateLimit(60);
 	// Hide mouse cursor
@@ -15,6 +15,7 @@ Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaT
 
 void Game::run() {
 	// This is our game loop!
+	ball.setVelocity(Vector2f(200,200));
 	// All input, logic, and rendering should be handled here
 	while (window.isOpen())
 	{
@@ -76,10 +77,45 @@ void Game::update() {
 	if (gameState == GameState::InGame) {
 		// Game logic update
 		paddle.update(window, deltaTime);
+		ball.update(window, deltaTime);
+
+		// Collision handling with paddles
+		if (ball.collide(paddle.getCollider())) {
+			//SFX
+			//soundManager.PlaySFX(SFX::bounce);
+			ball.Bounce(paddle);
+		}
+		// If hitting up or down edge
+		else if (ball.getPosition().y < 0 || ball.getPosition().x < 0 || ball.getPosition().x > GameWidth - ball.getSize().x) {
+			//SFX
+			//soundManager.PlaySFX(SFX::bounce);
+			ball.Bounce(GameHeight, GameWidth);
+		} // If fail to catch the ball
+		else if (isBallLaunched && (ball.getPosition().x <= 0 || ball.getPosition().x >= (GameHeight - ball.getSize().x))) {
+			//SFX
+			//soundManager.PlaySFX(SFX::dead);
+			// Trigger respawn 
+			isBallLaunched = false;
+
+			// Score update (move this to brick collision)
+			/*if (hit a brick) {
+				ui.SetScore(Vector2i(ui.GetScore()+ somescore);
+			}*/
+
+			// Stop the ball and stick it to paddle
+			ball.setPosition(paddle.getPosition() - Vector2f(-20, ball.getSize().y-0.1f));
+			ball.setVelocity(Vector2f(0, 0));
+		}
+
+		// Winning check / respawn ball [TODO]
+		/*if (all bricks destroyed) {
+			// Game over
+			//goal = false;
+			GameStateChange(GameState::EndGame);
+		}*/
 	}
 	// Score UI update
 	ui.update(window, gameState);
-
 }
 
 // Implements the render portion of our Game Loop Programming Pattern
@@ -90,7 +126,7 @@ void Game::render() {
 	// Game objects render
 	if (gameState == GameState::InGame) {
 		paddle.render(window,deltaTime);
-		//window.draw(ball);
+		ball.render(window,deltaTime);
 		//TODO: Draw bricks in level (object list)
 	}
 

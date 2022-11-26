@@ -11,8 +11,10 @@ namespace gm {
     protected:
         sf::RectangleShape body;
         sf::Vector2f velocity;
+        float baseSpeed,speedMultiplier;
+
     public:
-        SquareBall(const sf::Vector2f& position, const sf::Vector2f& size);
+        SquareBall(const sf::Vector2f& position, const sf::Vector2f& size, int baseSpeed);
 
         virtual void update(sf::RenderWindow& window, float deltaTime) override;
 
@@ -35,11 +37,14 @@ namespace gm {
 
         void setVelocity(const sf::Vector2f& velocity);
 
-        // Changing velocity direction and maybe magnitude when there's a collision 
-        void Bounce(const Paddle& paddle, int direction);
+        // Bouncing on paddle
+        void Bounce(const Paddle& paddle);
 
-        // overloaded Bounce when it reaches the top/bottom of screen
-        void Bounce(int direction, int GameHeight);
+        // Bouncing on brick
+        //void Bounce(const Brick& brick);
+
+        // overloaded Bounce when it reaches the edges of screen
+        void Bounce(int GameHeight, int GameWidth);
     };
 }
 

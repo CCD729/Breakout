@@ -17,6 +17,7 @@
 #include "GameObject.h"
 #include "UI.h"
 #include "Paddle.h"
+#include "SquareBall.h"
 #include "PlayerController.h"
 
 // Place our classes, functions, variables, and so forth in their own namespace to avoid naming collisions
@@ -42,8 +43,10 @@ namespace gm {
 		PlayerController playerController;
 		// Game objects
 		//Level currentLevel;
-		//SquareBall ball;
+		SquareBall ball;
 		Paddle paddle;
+		// Game state variables
+		bool isBallLaunched;
 		
 		// PlayerController
 		//PlayerController playerController;
