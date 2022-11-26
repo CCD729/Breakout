@@ -6,9 +6,11 @@ using namespace gm;
 using namespace sf;
 
 // Implement constructor, this will effectively be a setup function as the game gets more complex
-Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::EndGame) {
+Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::InGame), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 10)) {
 	// Set our fps to 60
 	window.setFramerateLimit(60);
+	// Hide mouse cursor
+	window.setMouseCursorVisible(false);
 }
 
 void Game::run() {
@@ -40,17 +42,15 @@ void Game::handleInput() {
 	{
 		if (event.type == Event::Closed)
 			window.close();
-		if (gameState == GameState::Menu) {
+		// Handle Input for each state
+		if (gameState == GameState::Menu) { // Simply change state
 			if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
 					GameStateChange(GameState::InGame);
 				}
 			}
 		}
-		else if (gameState == GameState::InGame) {
-			//playerController.handleInput(event, paddle, GameWidth);
-		}
-		else if (gameState == GameState::EndGame) {
+		else if (gameState == GameState::EndGame) { // Simply change state
 			if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Right) {
 					GameStateChange(GameState::Menu);
@@ -64,6 +64,10 @@ void Game::handleInput() {
 		}*/
 
 	}
+	// Outside events because we want to handle out-of-window movements
+	if (gameState == GameState::InGame) {
+		playerController.handleInput(window, paddle, GameWidth, GameHeight);
+	}
 }
 
 // Implements the update portion of our Game Loop Programming Pattern
@@ -71,6 +75,7 @@ void Game::update() {
 	// Game update
 	if (gameState == GameState::InGame) {
 		// Game logic update
+		paddle.update(window, deltaTime);
 	}
 	// Score UI update
 	ui.update(window, gameState);
@@ -84,7 +89,7 @@ void Game::render() {
 
 	// Game objects render
 	if (gameState == GameState::InGame) {
-		//window.draw(paddle);
+		paddle.render(window,deltaTime);
 		//window.draw(ball);
 		//TODO: Draw bricks in level (object list)
 	}
