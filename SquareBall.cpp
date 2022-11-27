@@ -1,6 +1,5 @@
 #include "SquareBall.h"
 #include <iostream>
-
 using namespace sf;
 using namespace gm;
 
@@ -62,6 +61,16 @@ float SquareBall::getBaseSpeed() const {
 void SquareBall::setBaseSpeed(float speed) {
 	baseSpeed = speed;
 }
+
+float SquareBall::getSpeedMultiplier() const {
+	return speedMultiplier;
+}
+
+void SquareBall::setSpeedMultiplier(float multiplier) {
+	speedMultiplier = multiplier;
+}
+
+
 
 // Bounce off paddle
 void SquareBall::Bounce(const Paddle& paddle) {

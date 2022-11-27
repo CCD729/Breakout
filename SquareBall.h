@@ -11,7 +11,7 @@ namespace gm {
     protected:
         sf::RectangleShape body;
         sf::Vector2f velocity;
-        float baseSpeed,speedMultiplier;
+        float baseSpeed, speedMultiplier;
 
     public:
         SquareBall(const sf::Vector2f& position, const sf::Vector2f& size, float baseSpeed);
@@ -40,6 +40,10 @@ namespace gm {
         float getBaseSpeed() const;
 
         void setBaseSpeed(float speed);
+
+        float getSpeedMultiplier() const;
+
+        void setSpeedMultiplier(float multiplier);
 
         // Bouncing on paddle
         void Bounce(const Paddle& paddle);

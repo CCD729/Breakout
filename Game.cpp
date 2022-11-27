@@ -1,5 +1,6 @@
 // We need to include our header file to implement the function prototypes of our Game class
 #include "Game.h"
+#include <iostream>
 
 // Since we are in our private .cpp file, it's fine to use a namespace here
 using namespace gm;
@@ -15,7 +16,7 @@ Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaT
 
 void Game::run() {
 	// This is our game loop!
-	ball.setVelocity(Vector2f(ball.getBaseSpeed(), ball.getBaseSpeed()));
+	//ball.setVelocity(Vector2f(ball.getBaseSpeed(), ball.getBaseSpeed()));
 	// All input, logic, and rendering should be handled here
 	while (window.isOpen())
 	{
@@ -51,6 +52,9 @@ void Game::handleInput() {
 				}
 			}
 		}
+		else if (gameState == GameState::InGame) {
+			playerController.handleInput(event, window, paddle, ball, GameWidth, GameHeight, isBallLaunched);
+		}
 		else if (gameState == GameState::EndGame) { // Simply change state
 			if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Right) {
@@ -67,7 +71,7 @@ void Game::handleInput() {
 	}
 	// Outside events because we want to handle out-of-window movements
 	if (gameState == GameState::InGame) {
-		playerController.handleInput(window, paddle, GameWidth, GameHeight);
+		playerController.handleInput(window, paddle, ball, GameWidth, GameHeight, isBallLaunched);
 	}
 }
 
@@ -80,31 +84,40 @@ void Game::update() {
 		ball.update(window, deltaTime);
 
 		// Collision handling with paddles
-		if (ball.collide(paddle.getCollider())) {
-			//SFX
-			//soundManager.PlaySFX(SFX::bounce);
-			ball.Bounce(paddle);
-		}
-		// If hitting up or down edge
-		else if (ball.getPosition().y < 0 || ball.getPosition().x < 0 || ball.getPosition().x > GameWidth - ball.getSize().x) {
-			//SFX
-			//soundManager.PlaySFX(SFX::bounce);
-			ball.Bounce(GameHeight, GameWidth);
-		} // If fail to catch the ball
-		else if (isBallLaunched && (ball.getPosition().x <= 0 || ball.getPosition().x >= (GameHeight - ball.getSize().x))) {
-			//SFX
-			//soundManager.PlaySFX(SFX::dead);
-			// Trigger respawn 
-			isBallLaunched = false;
+		if (isBallLaunched) {
+			if (ball.collide(paddle.getCollider())) {
+				//SFX
+				//soundManager.PlaySFX(SFX::bounce);
+				ball.Bounce(paddle);
+			}
+			// If hitting up or down edge
+			else if (ball.getPosition().y < 0 || ball.getPosition().x < 0 || ball.getPosition().x > GameWidth - ball.getSize().x) {
+				//SFX
+				//soundManager.PlaySFX(SFX::bounce);
+				ball.Bounce(GameHeight, GameWidth);
+			} // If fail to catch the ball
+			else if (ball.getPosition().y > GameHeight) {
+				//SFX
+				//soundManager.PlaySFX(SFX::dead);
 
+				// Stop the ball and stick it to paddle
+				isBallLaunched = false;
+				ball.setPosition(paddle.getPosition() - Vector2f(-20, ball.getSize().y - 0.1f));
+				ball.setVelocity(Vector2f(0, 0));
+				// Trigger respawn 
+				if (ui.GetLives() > 1) {
+					std::cout << ui.GetLives() << isBallLaunched << std::endl;
+					ui.SetLives(ui.GetLives() - 1);
+				}
+				else { // Game over
+					ui.SetLives(ui.GetLives() - 1);
+					GameStateChange(GameState::EndGame);
+				}
+			}
 			// Score update (move this to brick collision)
-			/*if (hit a brick) {
-				ui.SetScore(Vector2i(ui.GetScore()+ somescore);
-			}*/
-
-			// Stop the ball and stick it to paddle
-			ball.setPosition(paddle.getPosition() - Vector2f(-20, ball.getSize().y-0.1f));
-			ball.setVelocity(Vector2f(0, 0));
+				/*if (hit a brick) {
+					ui.SetScore(Vector2i(ui.GetScore()+ somescore);
+				}*/
 		}
 
 		// Winning check / respawn ball [TODO]

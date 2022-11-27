@@ -98,7 +98,7 @@ int UI::GetLives() const {
 }
 
 void UI::SetLives(int lives) {
-	this->level = level;
+	this->lives = lives;
 	livesText.setString("Lives: " + std::to_string(lives));
 }
 

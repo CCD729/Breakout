@@ -2,13 +2,15 @@
 #define PLAYER_CONTROLLER_H
 
 #include "Paddle.h"
+#include "SquareBall.h"
 
 namespace gm {
 	class PlayerController
 	{
 	public:
 		PlayerController();
-		void handleInput(sf::RenderWindow& window, Paddle& paddle, int GameWidth, int GameHeight);
+		void handleInput(sf::Event& event, sf::RenderWindow& window, Paddle& paddle, SquareBall& ball, int GameWidth, int GameHeight, bool& isBallLaunched);
+		void handleInput(sf::RenderWindow& window, Paddle& paddle, SquareBall& ball, int GameWidth, int GameHeight, bool& isBallLaunched);
 		void update(Paddle& paddle, int GameWidth);
 		~PlayerController();
 	};
