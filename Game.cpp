@@ -7,7 +7,7 @@ using namespace gm;
 using namespace sf;
 
 // Implement constructor, this will effectively be a setup function as the game gets more complex
-Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 10)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200) {
+Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 15)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200) {
 	// Set our fps to 60
 	window.setFramerateLimit(60);
 	// Hide mouse cursor
@@ -102,7 +102,7 @@ void Game::update() {
 
 				// Stop the ball and stick it to paddle
 				isBallLaunched = false;
-				ball.setPosition(paddle.getPosition() - Vector2f(-20, ball.getSize().y - 0.1f));
+				ball.setPosition(paddle.getPosition() - Vector2f(-20, ball.getSize().y + 2.f));
 				ball.setVelocity(Vector2f(0, 0));
 				// Trigger respawn 
 				if (ui.GetLives() > 1) {

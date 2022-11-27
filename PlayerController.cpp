@@ -31,7 +31,7 @@ void PlayerController::handleInput(RenderWindow& window,  Paddle& paddle, Square
 		paddle.setPosition(Vector2f(Mouse::getPosition(window).x - paddle.getSize().x / 2, paddle.getPosition().y));
 	// Ball sticks to paddle if not launched
 	if (!isBallLaunched) {
-		ball.setPosition(paddle.getPosition() - Vector2f(-30, ball.getSize().y - 2.f));
+		ball.setPosition(paddle.getPosition() - Vector2f(-30, ball.getSize().y + 2.f));
 	}
 }
 
