@@ -8,6 +8,7 @@ Brick::Brick(const Vector2f& position, const Vector2f& size, BrickType* t) : Gam
 	body.setSize(size);
 	type = t;
 	hp = t->hp;
+	pointworth = t->pointworth;
 	body.setFillColor(t->color);
 }
 

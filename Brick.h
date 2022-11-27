@@ -8,18 +8,22 @@ namespace gm {
 	struct BrickType {
 		int hp;
 		sf::Color color;
+		int pointworth;
 	};
 	BrickType normal_brick = {
 		1,
-		sf::Color::White
+		sf::Color::White,
+		50
 	};
 	BrickType hard_brick = {
 		2,
-		sf::Color::Cyan
+		sf::Color::Cyan,
+		125
 	};
 	BrickType tough_brick = {
 		3,
-		sf::Color::Blue
+		sf::Color::Blue,
+		200
 	};
 
 	class Brick :
@@ -27,6 +31,7 @@ namespace gm {
 	{
 	protected:
 		int hp;
+		int pointworth;
 		sf::RectangleShape body;
 		const BrickType* type;
 	public:
