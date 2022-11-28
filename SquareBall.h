@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "Paddle.h"
+#include "Brick.h"
 
 namespace gm {
     class SquareBall :
@@ -11,7 +12,7 @@ namespace gm {
     protected:
         sf::RectangleShape body;
         sf::Vector2f velocity;
-        float baseSpeed, speedMultiplier;
+        float baseSpeed, speedMultiplier, maxMultiplier;
 
     public:
         SquareBall(const sf::Vector2f& position, const sf::Vector2f& size, float baseSpeed);
@@ -49,7 +50,7 @@ namespace gm {
         void Bounce(const Paddle& paddle);
 
         // Bouncing on brick
-        //void Bounce(const Brick& brick);
+        void Bounce(const Brick& brick);
 
         // overloaded Bounce when it reaches the edges of screen
         void Bounce(int GameHeight, int GameWidth);

@@ -10,22 +10,6 @@ namespace gm {
 		sf::Color color;
 		int pointworth;
 	};
-	BrickType normal_brick = {
-		1,
-		sf::Color::White,
-		50
-	};
-	BrickType hard_brick = {
-		2,
-		sf::Color::Cyan,
-		125
-	};
-	BrickType tough_brick = {
-		3,
-		sf::Color::Blue,
-		200
-	};
-
 	class Brick :
 		public GameObject
 	{
@@ -55,6 +39,12 @@ namespace gm {
 
 		void setSize(const sf::Vector2f& size);
 
+		int getPoint() const;
+
+		// Hit lose HP
+		void hit();
+		// isDead
+		bool isDead() const;
 	};
 }
 

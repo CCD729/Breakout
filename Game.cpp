@@ -6,8 +6,44 @@
 using namespace gm;
 using namespace sf;
 
+// Temp Levels
+
+int level1grid[9][10] = {
+	{1,1,1,1,1,1,1,1,1,1},
+	{1,1,1,1,1,1,1,1,1,1},
+	{1,1,1,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,1,1,1,1,1,1,1,1,1},
+	{1,1,1,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,1,1,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0}
+};
+int level2grid[9][10] = {
+	{2,1,1,1,1,1,1,1,1,2},
+	{1,2,1,2,2,2,2,1,2,1},
+	{1,1,2,1,1,1,1,2,1,1},
+	{1,1,1,2,1,1,2,1,1,1},
+	{0,0,0,0,2,2,0,0,0,0},
+	{1,1,1,2,0,0,2,1,1,1},
+	{1,1,2,0,0,0,0,2,1,1},
+	{1,2,0,0,0,0,0,0,2,1},
+	{2,0,0,0,0,0,0,0,0,2}
+};
+int level3grid[9][10] = {
+	{1,1,1,2,2,2,2,1,1,1},
+	{2,0,0,0,0,0,0,0,0,0},
+	{3,3,3,3,3,3,3,3,3,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,3,3,3,3,3,3,3,3,3},
+	{0,0,0,0,0,0,0,0,0,0},
+	{3,3,3,3,3,3,3,3,3,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,3,3,3,3,3,3,3,3,3}
+};
+
 // Implement constructor, this will effectively be a setup function as the game gets more complex
-Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 15)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200) {
+Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 15)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200), level1(level1grid, float(GameWidth), float(GameHeight/64*27), 9, 10), level2(level2grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10), level3(level3grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10) {
 	// Set our fps to 60
 	window.setFramerateLimit(60);
 	// Hide mouse cursor
@@ -85,13 +121,15 @@ void Game::update() {
 
 		// Collision handling with paddles
 		if (isBallLaunched) {
-			if (ball.collide(paddle.getCollider())) {
+			if (ball.collide(paddle.getCollider()) || // edge case: ball in the paddle due to speed
+				(ball.getCollider().left > paddle.getCollider().left && ball.getCollider().left + ball.getSize().x < paddle.getCollider().left + paddle.getSize().x &&
+					ball.getCollider().top >paddle.getCollider().top && ball.getCollider().top + ball.getSize().y < paddle.getCollider().top + paddle.getSize().y)) {
 				//SFX
 				//soundManager.PlaySFX(SFX::bounce);
 				ball.Bounce(paddle);
 			}
 			// If hitting up or down edge
-			else if (ball.getPosition().y < 0 || ball.getPosition().x < 0 || ball.getPosition().x > GameWidth - ball.getSize().x) {
+			else if (ball.getPosition().y < 30 || ball.getPosition().x < 0 || ball.getPosition().x > GameWidth - ball.getSize().x) {
 				//SFX
 				//soundManager.PlaySFX(SFX::bounce);
 				ball.Bounce(GameHeight, GameWidth);
@@ -106,19 +144,37 @@ void Game::update() {
 				ball.setVelocity(Vector2f(0, 0));
 				// Trigger respawn 
 				if (ui.GetLives() > 1) {
-					std::cout << ui.GetLives() << isBallLaunched << std::endl;
+					//std::cout << ui.GetLives() << isBallLaunched << std::endl;
 					ui.SetLives(ui.GetLives() - 1);
+					ball.setSpeedMultiplier(1);
 				}
 				else { // Game over
 					ui.SetLives(ui.GetLives() - 1);
 					GameStateChange(GameState::EndGame);
 				}
 			}
+			// Brick collision
+			for (int i = 0; i < int(currentLevel->getBricks().size());) {
+				Brick* brick = currentLevel->getBricks()[i].get();
+				if (ball.collide(brick->getCollider())) {
+					ball.Bounce(*brick);
+					brick->hit();
+					if (brick->isDead()) {
+						ui.SetScore(ui.GetScore() + brick->getPoint());
+						currentLevel->getBricks().erase(currentLevel->getBricks().begin() + i);
+						continue;
+					}
+				}
+				i++;
+			}
+			 
 			// Score update (move this to brick collision)
 				/*if (hit a brick) {
 					ui.SetScore(Vector2i(ui.GetScore()+ somescore);
 				}*/
 		}
+		// Level update
+		currentLevel->update(window, deltaTime);
 
 		// Winning check / respawn ball [TODO]
 		/*if (all bricks destroyed) {
@@ -140,7 +196,8 @@ void Game::render() {
 	if (gameState == GameState::InGame) {
 		paddle.render(window,deltaTime);
 		ball.render(window,deltaTime);
-		//TODO: Draw bricks in level (object list)
+		// Level render
+		currentLevel->render(window, deltaTime);
 	}
 
 	// UI element render
@@ -158,14 +215,14 @@ void Game::GameStateChange(GameState state) {
 	else if (state == GameState::InGame) {
 		gameState = GameState::InGame;
 		// Reset (from menu or end, gamemode keeps)
-
+		// Level size(temp 9 * 10 270 * 640)
 		// Initalize (based on game mode)
 		// First recenter the ball and paddle
 		//ball.setPosition(centerPosition - Vector2f(ball.getSize().x / 2, ball.getSize().y / 2));
 		//paddle.setPosition(paddle1Position - Vector2f(paddle.getSize().x / 2, paddle.getSize().y / 2));
 
 		//lives = 3;
-		//level.SetLevel(1);
+		Game::loadLevel(1);
 		ui.SetScore(0);
 		ui.SetLevel(1);
 		ui.SetLives(3);
@@ -183,6 +240,21 @@ void Game::GameStateChange(GameState state) {
 		// Clear current level bricks object list
 		// 
 	}
+}
+
+void Game::loadLevel(int level) {
+	switch (level % 3) {
+	case 1 :
+		currentLevel = &level1;
+		break;
+	case 2:
+		currentLevel = &level2;
+		break;
+	case 0:
+		currentLevel = &level3;
+		break;
+	}
+	currentLevel->reset();
 }
 
 // Implement destructor, make sure we free up any memory that we allocated here!

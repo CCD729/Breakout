@@ -71,7 +71,7 @@ UI::UI() : score(0), level(1), lives(3) {
 	levelText.setPosition(Vector2f(10, 10));
 	livesText.setPosition(Vector2f(485, 10));
 	gameOverText.setPosition(Vector2f(155, 100));
-	endScoreText.setPosition(Vector2f(165, 265));
+	endScoreText.setPosition(Vector2f(130, 265));
 	restartPromptText.setPosition(Vector2f(50, 420));
 }
 int UI::GetScore() const {

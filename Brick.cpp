@@ -41,3 +41,22 @@ const Vector2f Brick::getSize() const {
 void Brick::setSize(const Vector2f& size) {
 	body.setSize(size);
 }
+
+int Brick::getPoint() const {
+	return pointworth;
+}
+
+// Hit lose HP
+void Brick::hit() {
+	hp--;
+	if (hp == 2) {
+		body.setFillColor(Color::Cyan);
+	}
+	else if (hp == 1) {
+		body.setFillColor(Color::White);
+	}
+}
+// isDead
+bool Brick::isDead() const {
+	return hp == 0;
+}

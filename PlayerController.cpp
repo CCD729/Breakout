@@ -13,7 +13,7 @@ void PlayerController::handleInput(Event& event, RenderWindow& window, Paddle& p
 		if (event.mouseButton.button == Mouse::Left) {
 			isBallLaunched = true;
 			float currentSpeed = sqrtf(ball.getBaseSpeed() * ball.getBaseSpeed() + ball.getBaseSpeed() * ball.getBaseSpeed()) * ball.getSpeedMultiplier();
-			ball.setVelocity(Vector2f((-1) * currentSpeed * sin(45 * 3.14159f / 180), currentSpeed * cos(45 * 3.14159f / 180)));
+			ball.setVelocity(Vector2f((-1) * currentSpeed * sin(30 * 3.14159f / 180), (-1)* currentSpeed * cos(30 * 3.14159f / 180)));
 		}
 	}
 }

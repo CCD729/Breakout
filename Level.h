@@ -1,7 +1,6 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include "GameObject.h"
 #include "Brick.h"
 #include<memory>
 #include<vector>
@@ -12,13 +11,13 @@ namespace gm {
     {
     protected:
         // Grid size needs to be determined
-        //int grid[x][y];
+        int grid[9][10];
         std::vector<std::unique_ptr<Brick>> BrickList;
         int brickHeight = 0;
         int brickWidth = 0;
         int row, column = 0;
     public:
-        Level();
+        Level(int levelGrid[9][10], float LevelWidth, float LevelHeight, int row, int column);
 
         virtual void update(sf::RenderWindow& window, float deltaTime) override;
 
@@ -26,7 +25,7 @@ namespace gm {
 
         std::vector<std::unique_ptr<Brick>>& getBricks();
 
-        void reset(int level);
+        void reset();
         
         ~Level();
 
