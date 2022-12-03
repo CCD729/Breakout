@@ -6,29 +6,28 @@
 using namespace gm;
 using namespace sf;
 
-// Temp Levels
-
+// Repeated Levels
 int level1grid[9][10] = {
-	{1,1,1,1,1,1,1,1,1,1},
-	{1,1,1,1,1,1,1,1,1,1},
-	{1,1,1,1,1,1,1,1,1,1},
-	{0,0,0,0,0,0,0,0,0,0},
-	{1,1,1,1,1,1,1,1,1,1},
-	{1,1,1,1,1,1,1,1,1,1},
-	{0,0,0,0,0,0,0,0,0,0},
-	{1,1,1,1,1,1,1,1,1,1},
-	{0,0,0,0,0,0,0,0,0,0}
-};
-int level2grid[9][10] = {
 	{2,1,1,1,1,1,1,1,1,2},
 	{1,2,1,2,2,2,2,1,2,1},
-	{1,1,2,1,1,1,1,2,1,1},
-	{1,1,1,2,1,1,2,1,1,1},
-	{0,0,0,0,2,2,0,0,0,0},
-	{1,1,1,2,0,0,2,1,1,1},
 	{1,1,2,0,0,0,0,2,1,1},
-	{1,2,0,0,0,0,0,0,2,1},
+	{1,1,1,2,0,0,2,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,1,1,2,0,0,2,1,1,1},
+	{1,0,2,0,0,0,0,2,0,1},
+	{2,2,0,0,0,0,0,0,2,2},
 	{2,0,0,0,0,0,0,0,0,2}
+};
+int level2grid[9][10] = {
+	{0,1,3,0,0,0,0,3,1,0},
+	{0,3,1,3,1,1,3,1,3,0},
+	{3,1,2,1,3,3,1,2,1,3},
+	{0,0,2,0,0,0,0,2,0,0},
+	{1,1,1,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,2,1,2,1,2,1,2,1,2},
+	{2,1,2,1,2,1,2,1,2,1},
+	{1,1,1,1,1,1,1,1,1,1}
 };
 int level3grid[9][10] = {
 	{1,1,1,2,2,2,2,1,1,1},
@@ -42,8 +41,43 @@ int level3grid[9][10] = {
 	{0,3,3,3,3,3,3,3,3,3}
 };
 
+// Easy Tutorial Levels
+int levelb2grid[9][10] = {
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,1,0,2,2,0,1,0,0},
+	{0,0,0,3,1,1,3,0,0,0},
+	{0,0,1,0,0,0,0,1,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+};
+int levelb1grid[9][10] = {
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,1,0,0,3,3,0,0,1,1},
+	{0,1,1,2,0,0,2,1,1,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+};
+int level0grid[9][10] = {
+	{1,2,2,0,3,3,0,2,2,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,1,1,1,1,1,1,1,1,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,1,1,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0},
+};
+
 // Implement constructor, this will effectively be a setup function as the game gets more complex
-Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 15)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200), level1(level1grid, float(GameWidth), float(GameHeight/64*27), 9, 10), level2(level2grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10), level3(level3grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10) {
+Game::Game() : window(VideoMode(GameWidth, GameHeight), "Game"), clock(), deltaTime(0), gameState(GameState::Menu), isBallLaunched(false), paddle(Vector2f(GameWidth/2-50, GameHeight - 50), Vector2f(100, 15)), ball(Vector2f(GameWidth / 2 - 5, GameHeight / 2 - 5), Vector2f(10, 10), 200), level1(level1grid, float(GameWidth), float(GameHeight/64*27), 9, 10), level2(level2grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10), level3(level3grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10), levelCounter(0), currentSpeedMultiplier(1.f), levelb2(levelb2grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10), levelb1(levelb1grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10), level0(level0grid, float(GameWidth), float(GameHeight / 64 * 27), 9, 10) {
 	// Set our fps to 60
 	window.setFramerateLimit(60);
 	// Hide mouse cursor
@@ -99,11 +133,6 @@ void Game::handleInput() {
 			}
 		}
 
-		// handle some key 
-		/*if (event.type == Event::KeyPressed) {
-
-		}*/
-
 	}
 	// Outside events because we want to handle out-of-window movements
 	if (gameState == GameState::InGame) {
@@ -146,7 +175,7 @@ void Game::update() {
 				if (ui.GetLives() > 1) {
 					//std::cout << ui.GetLives() << isBallLaunched << std::endl;
 					ui.SetLives(ui.GetLives() - 1);
-					ball.setSpeedMultiplier(1);
+					ball.setSpeedMultiplier(currentSpeedMultiplier);
 				}
 				else { // Game over
 					ui.SetLives(ui.GetLives() - 1);
@@ -167,24 +196,39 @@ void Game::update() {
 				}
 				i++;
 			}
-			 
-			// Score update (move this to brick collision)
-				/*if (hit a brick) {
-					ui.SetScore(Vector2i(ui.GetScore()+ somescore);
-				}*/
 		}
 		// Level update
 		currentLevel->update(window, deltaTime);
 
 		// Winning check / respawn ball [TODO]
-		/*if (all bricks destroyed) {
-			// Game over
-			//goal = false;
-			GameStateChange(GameState::EndGame);
-		}*/
+		if (currentLevel->getBricks().empty()) {
+			// Load next level
+			levelCounter++;
+			Game::loadLevel(levelCounter);
+			if (levelCounter <= 0) {
+				if (levelCounter == 0)
+					ui.SetLevel(3);
+				else if (levelCounter == -1)
+					ui.SetLevel(2);
+				else
+					ui.SetLevel(1);
+			}
+			else {
+				ui.SetLevel(levelCounter+3);
+			}
+			// Reset the ball
+			ball.setVelocity(Vector2f(0, 0));
+			isBallLaunched = false;
+			if (currentSpeedMultiplier < ball.getMaxSpeedMultiplier())
+				currentSpeedMultiplier += 0.1f;
+			else
+				currentSpeedMultiplier = ball.getMaxSpeedMultiplier();
+			ball.setSpeedMultiplier(currentSpeedMultiplier);
+		}
 	}
 	// Score UI update
 	ui.update(window, gameState);
+	std::cout << "ballSpeed: " <<ball.getSpeedMultiplier()<<", " <<sqrtf(ball.getVelocity().x*ball.getVelocity().x+ ball.getVelocity().y* ball.getVelocity().y) << " level multiplier: " << currentSpeedMultiplier << std::endl;
 }
 
 // Implements the render portion of our Game Loop Programming Pattern
@@ -222,10 +266,13 @@ void Game::GameStateChange(GameState state) {
 		//paddle.setPosition(paddle1Position - Vector2f(paddle.getSize().x / 2, paddle.getSize().y / 2));
 
 		//lives = 3;
-		Game::loadLevel(1);
+		levelCounter = -2;
+		Game::loadLevel(levelCounter);
 		ui.SetScore(0);
 		ui.SetLevel(1);
 		ui.SetLives(3);
+		currentSpeedMultiplier = 1.f;
+		ball.setSpeedMultiplier(currentSpeedMultiplier);
 	}
 	else if (state == GameState::EndGame) {
 		gameState = GameState::EndGame;
@@ -243,16 +290,31 @@ void Game::GameStateChange(GameState state) {
 }
 
 void Game::loadLevel(int level) {
-	switch (level % 3) {
-	case 1 :
-		currentLevel = &level1;
-		break;
-	case 2:
-		currentLevel = &level2;
-		break;
-	case 0:
-		currentLevel = &level3;
-		break;
+	if (level <= 0) {
+		switch (level) {
+		case -2:
+			currentLevel = &levelb2;
+			break;
+		case -1:
+			currentLevel = &levelb1;
+			break;
+		case 0:
+			currentLevel = &level0;
+			break;
+		}
+	}
+	else {
+		switch (level % 3) {
+		case 1:
+			currentLevel = &level1;
+			break;
+		case 2:
+			currentLevel = &level2;
+			break;
+		case 0:
+			currentLevel = &level3;
+			break;
+		}
 	}
 	currentLevel->reset();
 }

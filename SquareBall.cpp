@@ -7,7 +7,7 @@ SquareBall::SquareBall(const Vector2f& position, const Vector2f& size, float bas
 	body.setPosition(position);
 	body.setSize(size);
 	velocity = Vector2f(0, 0);
-	maxMultiplier = 3.3f;
+	maxMultiplier = 3.f;
 }
 
 void SquareBall::update(sf::RenderWindow& window, float deltaTime){
@@ -71,7 +71,9 @@ void SquareBall::setSpeedMultiplier(float multiplier) {
 	speedMultiplier = multiplier;
 }
 
-
+const float SquareBall::getMaxSpeedMultiplier() const {
+	return maxMultiplier;
+}
 
 // Bounce off paddle
 void SquareBall::Bounce(const Paddle& paddle) {
@@ -90,13 +92,13 @@ void SquareBall::Bounce(const Paddle& paddle) {
 		if (landingPt <= paddle.getSize().x / 2) {
 			// Left part
 			float angle = ((paddle.getSize().x / 2) - landingPt) / (paddle.getSize().x / 2) * 70;
-			std::cout << angle << std::endl;
+			//std::cout << angle << std::endl;
 			velocity.x = (-1) * currentSpeed * sin(angle * 3.14159f / 180);
 			velocity.y = currentSpeed * cos(angle * 3.14159f / 180);
 		}
 		else {
 			float angle = (landingPt-(paddle.getSize().x / 2)) / (paddle.getSize().x / 2) * 70;
-			std::cout << angle << std::endl;
+			//std::cout << angle << std::endl;
 			velocity.x = currentSpeed * sin(angle * 3.14159f / 180);
 			velocity.y = currentSpeed * cos(angle * 3.14159f / 180);
 		}
@@ -133,8 +135,8 @@ void SquareBall::Bounce(const Paddle& paddle) {
 		}
 		*/
 		velocity.y = (-1) * velocity.y;
-		if(speedMultiplier < maxMultiplier)
-			speedMultiplier = speedMultiplier += 0.05f;
+		if (speedMultiplier < maxMultiplier)
+			speedMultiplier = speedMultiplier += 0.025f;
 		// Reset position
 		setPosition(Vector2f(getPosition().x, paddle.getPosition().y-getSize().y-0.1f));
 	}
@@ -207,7 +209,7 @@ void SquareBall::Bounce(const Paddle& paddle) {
 		*/
 		velocity.y = (-1) * velocity.y;
 		if (speedMultiplier < maxMultiplier)
-			speedMultiplier = speedMultiplier += 0.05f;
+			speedMultiplier = speedMultiplier += 0.025f;
 		// Reset position
 		setPosition(Vector2f(getPosition().x, paddle.getPosition().y - getSize().y - 0.1f));
 	}

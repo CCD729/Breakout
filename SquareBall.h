@@ -45,6 +45,8 @@ namespace gm {
         float getSpeedMultiplier() const;
 
         void setSpeedMultiplier(float multiplier);
+        
+        const float getMaxSpeedMultiplier() const;
 
         // Bouncing on paddle
         void Bounce(const Paddle& paddle);

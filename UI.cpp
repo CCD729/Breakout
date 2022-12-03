@@ -88,7 +88,7 @@ int UI::GetLevel() const {
 	return level;
 }
 
-void UI::SetLevel(int lives) {
+void UI::SetLevel(int level) {
 	this->level = level;
 	levelText.setString("Level " + std::to_string(level));
 }

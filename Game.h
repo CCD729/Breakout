@@ -44,7 +44,9 @@ namespace gm {
 		PlayerController playerController;
 		// Game objects
 		Level* currentLevel;
-		Level level1, level2, level3;
+		int levelCounter;
+		float currentSpeedMultiplier;
+		Level level1, level2, level3, levelb2, levelb1, level0;
 		SquareBall ball;
 		Paddle paddle;
 		// Game state variables
