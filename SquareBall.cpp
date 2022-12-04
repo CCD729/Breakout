@@ -7,7 +7,7 @@ SquareBall::SquareBall(const Vector2f& position, const Vector2f& size, float bas
 	body.setPosition(position);
 	body.setSize(size);
 	velocity = Vector2f(0, 0);
-	maxMultiplier = 3.f;
+	maxMultiplier = 2.5f;
 }
 
 void SquareBall::update(sf::RenderWindow& window, float deltaTime){

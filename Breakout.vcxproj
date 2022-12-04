@@ -27,6 +27,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="SquareBall.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
@@ -38,6 +39,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="SquareBall.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>

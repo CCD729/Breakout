@@ -8,12 +8,13 @@ PlayerController::PlayerController()  {
 }
 
 // Handle ball launch
-void PlayerController::handleInput(Event& event, RenderWindow& window, Paddle& paddle, SquareBall& ball, int GameWidth, int GameHeight, bool& isBallLaunched) {
+void PlayerController::handleInput(Event& event, RenderWindow& window, Paddle& paddle, SquareBall& ball, int GameWidth, int GameHeight, bool& isBallLaunched, SoundManager& soundManager) {
 	if (!isBallLaunched && event.type == Event::MouseButtonPressed) {
 		if (event.mouseButton.button == Mouse::Left) {
 			isBallLaunched = true;
 			float currentSpeed = sqrtf(ball.getBaseSpeed() * ball.getBaseSpeed() + ball.getBaseSpeed() * ball.getBaseSpeed());
 			ball.setVelocity(Vector2f((-1) * currentSpeed * sin(30 * 3.14159f / 180), (-1)* currentSpeed * cos(30 * 3.14159f / 180)));
+			soundManager.PlaySFX(SFX::bouncePaddle);
 		}
 	}
 }

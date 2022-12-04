@@ -123,7 +123,7 @@ void Game::handleInput() {
 			}
 		}
 		else if (gameState == GameState::InGame) {
-			playerController.handleInput(event, window, paddle, ball, GameWidth, GameHeight, isBallLaunched);
+			playerController.handleInput(event, window, paddle, ball, GameWidth, GameHeight, isBallLaunched, soundManager);
 		}
 		else if (gameState == GameState::EndGame) { // Simply change state
 			if (event.type == Event::MouseButtonPressed) {
@@ -132,7 +132,6 @@ void Game::handleInput() {
 				}
 			}
 		}
-
 	}
 	// Outside events because we want to handle out-of-window movements
 	if (gameState == GameState::InGame) {
@@ -154,18 +153,18 @@ void Game::update() {
 				(ball.getCollider().left > paddle.getCollider().left && ball.getCollider().left + ball.getSize().x < paddle.getCollider().left + paddle.getSize().x &&
 					ball.getCollider().top >paddle.getCollider().top && ball.getCollider().top + ball.getSize().y < paddle.getCollider().top + paddle.getSize().y)) {
 				//SFX
-				//soundManager.PlaySFX(SFX::bounce);
+				soundManager.PlaySFX(SFX::bouncePaddle);
 				ball.Bounce(paddle);
 			}
 			// If hitting up or down edge
 			else if (ball.getPosition().y < 30 || ball.getPosition().x < 0 || ball.getPosition().x > GameWidth - ball.getSize().x) {
 				//SFX
-				//soundManager.PlaySFX(SFX::bounce);
+				soundManager.PlaySFX(SFX::bounceWall);
 				ball.Bounce(GameHeight, GameWidth);
 			} // If fail to catch the ball
 			else if (ball.getPosition().y > GameHeight) {
 				//SFX
-				//soundManager.PlaySFX(SFX::dead);
+				soundManager.PlaySFX(SFX::loseBall);
 
 				// Stop the ball and stick it to paddle
 				isBallLaunched = false;
@@ -178,6 +177,8 @@ void Game::update() {
 					ball.setSpeedMultiplier(currentSpeedMultiplier);
 				}
 				else { // Game over
+					// SFX
+					soundManager.PlaySFX(SFX::gameOver);
 					ui.SetLives(ui.GetLives() - 1);
 					GameStateChange(GameState::EndGame);
 				}
@@ -189,9 +190,14 @@ void Game::update() {
 					ball.Bounce(*brick);
 					brick->hit();
 					if (brick->isDead()) {
+						// SFX
+						soundManager.PlaySFX(SFX::bounceBrick);
 						ui.SetScore(ui.GetScore() + brick->getPoint());
 						currentLevel->getBricks().erase(currentLevel->getBricks().begin() + i);
 						continue;
+					}
+					else {
+						soundManager.PlaySFX(SFX::bounceBrickDamage);
 					}
 				}
 				i++;
@@ -202,6 +208,8 @@ void Game::update() {
 
 		// Winning check / respawn ball [TODO]
 		if (currentLevel->getBricks().empty()) {
+			// SFX
+			soundManager.PlaySFX(SFX::levelComplete);
 			// Load next level
 			levelCounter++;
 			Game::loadLevel(levelCounter);
@@ -228,7 +236,7 @@ void Game::update() {
 	}
 	// Score UI update
 	ui.update(window, gameState);
-	std::cout << "ballSpeed: " <<ball.getSpeedMultiplier()<<", " <<sqrtf(ball.getVelocity().x*ball.getVelocity().x+ ball.getVelocity().y* ball.getVelocity().y) << " level multiplier: " << currentSpeedMultiplier << std::endl;
+	//std::cout << "ballSpeed: " <<ball.getSpeedMultiplier()<<", " <<sqrtf(ball.getVelocity().x*ball.getVelocity().x+ ball.getVelocity().y* ball.getVelocity().y) << " level multiplier: " << currentSpeedMultiplier << std::endl;
 }
 
 // Implements the render portion of our Game Loop Programming Pattern
